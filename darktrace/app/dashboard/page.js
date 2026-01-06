@@ -44,7 +44,6 @@ export default function DashboardPage() {
       } catch (err) {
         console.error("Failed to load dashboard data:", err);
         setError("Failed to load data. Please ensure backend is running.");
-        // Fallback to empty state
       } finally {
         setLoading(false);
       }
@@ -93,7 +92,6 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Stats Grid */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <StatCard
@@ -129,7 +127,6 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {trends && (
             <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
@@ -154,7 +151,6 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Recent Activity */}
         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-5 h-5 text-red-600 dark:text-red-400" />

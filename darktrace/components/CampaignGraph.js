@@ -5,7 +5,6 @@ import CytoscapeComponent from "react-cytoscapejs";
 import cytoscape from "cytoscape";
 import dagre from "cytoscape-dagre";
 
-// Register dagre layout
 cytoscape.use(dagre);
 
 const nodeStyles = {
@@ -60,8 +59,7 @@ export default function CampaignGraph({ elements }) {
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
-      
-      // Apply styles
+
       cy.style()
         .selector("node[type='vendor']")
         .style({

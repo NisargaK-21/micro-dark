@@ -126,7 +126,3 @@
 
 ---
 
-If you want, I can also:
-- Add a short `backend/README.md` with the exact copy‑paste commands, or
-- Add basic tests for `/api/analyze` and `/api/train` and update CI.
-

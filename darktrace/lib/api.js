@@ -1,12 +1,3 @@
-/**
- * API Client for DarkTrace Backend
- * 
- * Replace mock data imports with these API calls once backend is running.
- * 
- * Usage:
- *   import { fetchOverviewStats } from "@/lib/api";
- *   const stats = await fetchOverviewStats();
- */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -23,7 +14,6 @@ export async function fetchOverviewStats() {
     return res.json();
   } catch (error) {
     console.error('Failed to fetch overview stats:', error);
-    // Fallback to mock data if API fails
     throw error;
   }
 }

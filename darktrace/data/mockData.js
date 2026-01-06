@@ -1,5 +1,3 @@
-// Mock data for DarkTrace platform
-
 export const overviewStats = {
   totalCampaigns: 1247,
   activeVendors: 342,

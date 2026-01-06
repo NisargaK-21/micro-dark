@@ -77,7 +77,7 @@ export default function CampaignsPage() {
           </p>
         </div>
 
-        {/* Stats */}
+
         {stats && graphData && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <StatCard
@@ -107,7 +107,7 @@ export default function CampaignsPage() {
           </div>
         )}
 
-        {/* Graph Visualization */}
+
         {graphData && graphElements.length > 0 ? (
           <div className="mb-8">
             <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
@@ -127,7 +127,7 @@ export default function CampaignsPage() {
           </div>
         )}
 
-        {/* Legend */}
+
         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
           <h3 className="text-md font-semibold text-zinc-900 dark:text-white mb-4">
             Legend
