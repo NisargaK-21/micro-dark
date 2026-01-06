@@ -1,50 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CytoscapeComponent from "react-cytoscapejs";
 import cytoscape from "cytoscape";
 import dagre from "cytoscape-dagre";
 
-cytoscape.use(dagre);
-
-const nodeStyles = {
-  vendor: {
-    shape: "round-rectangle",
-    width: 120,
-    height: 60,
-    backgroundColor: "#ef4444",
-    color: "#ffffff",
-    borderWidth: 2,
-    borderColor: "#dc2626",
-  },
-  campaign: {
-    shape: "ellipse",
-    width: 100,
-    height: 100,
-    backgroundColor: "#f59e0b",
-    color: "#ffffff",
-    borderWidth: 2,
-    borderColor: "#d97706",
-  },
-  forum: {
-    shape: "round-diamond",
-    width: 100,
-    height: 80,
-    backgroundColor: "#3b82f6",
-    color: "#ffffff",
-    borderWidth: 2,
-    borderColor: "#2563eb",
-  },
-  tactic: {
-    shape: "round-triangle",
-    width: 80,
-    height: 80,
-    backgroundColor: "#10b981",
-    color: "#ffffff",
-    borderWidth: 2,
-    borderColor: "#059669",
-  },
-};
+// Register dagre layout
+if (!cytoscape.prototype.dagre) {
+  cytoscape.use(dagre);
+}
 
 const riskColors = {
   critical: "#ef4444",
@@ -55,11 +19,29 @@ const riskColors = {
 
 export default function CampaignGraph({ elements }) {
   const cyRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle responsive detection safely for Next.js
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     if (cyRef.current) {
       const cy = cyRef.current;
 
+      // Enable interaction for mobile touch
+      cy.userZoomingEnabled(true);
+      cy.userPanningEnabled(true);
+      cy.boxSelectionEnabled(false); // Better for mobile scrolling
+
+      // Apply styles with responsive sizing
       cy.style()
         .selector("node[type='vendor']")
         .style({
@@ -68,11 +50,13 @@ export default function CampaignGraph({ elements }) {
           "color": "#ffffff",
           "text-valign": "center",
           "text-halign": "center",
-          "width": 120,
-          "height": 60,
+          "width": isMobile ? 80 : 120,
+          "height": isMobile ? 40 : 60,
           "shape": "round-rectangle",
-          "font-size": 12,
+          "font-size": isMobile ? 9 : 12,
           "font-weight": "bold",
+          "text-wrap": "wrap",
+          "text-max-width": isMobile ? 70 : 110,
         })
         .selector("node[type='campaign']")
         .style({
@@ -81,10 +65,10 @@ export default function CampaignGraph({ elements }) {
           "color": "#ffffff",
           "text-valign": "center",
           "text-halign": "center",
-          "width": 100,
-          "height": 100,
+          "width": isMobile ? 70 : 100,
+          "height": isMobile ? 70 : 100,
           "shape": "ellipse",
-          "font-size": 11,
+          "font-size": isMobile ? 8 : 11,
         })
         .selector("node[type='forum']")
         .style({
@@ -93,10 +77,10 @@ export default function CampaignGraph({ elements }) {
           "color": "#ffffff",
           "text-valign": "center",
           "text-halign": "center",
-          "width": 100,
-          "height": 80,
+          "width": isMobile ? 70 : 100,
+          "height": isMobile ? 60 : 80,
           "shape": "round-diamond",
-          "font-size": 11,
+          "font-size": isMobile ? 8 : 11,
         })
         .selector("node[type='tactic']")
         .style({
@@ -105,44 +89,61 @@ export default function CampaignGraph({ elements }) {
           "color": "#ffffff",
           "text-valign": "center",
           "text-halign": "center",
-          "width": 80,
-          "height": 80,
+          "width": isMobile ? 60 : 80,
+          "height": isMobile ? 60 : 80,
           "shape": "round-triangle",
-          "font-size": 10,
+          "font-size": isMobile ? 7 : 10,
         })
         .selector("edge")
         .style({
-          "width": (edge) => edge.data("weight") * 5,
+          "width": (edge) => Math.max(1, (edge.data("weight") || 0.5) * (isMobile ? 2 : 4)),
           "line-color": "#a1a1aa",
           "target-arrow-color": "#a1a1aa",
           "target-arrow-shape": "triangle",
           "curve-style": "bezier",
-          "opacity": (edge) => edge.data("weight") || 0.5,
+          "opacity": (edge) => Math.min(1, (edge.data("weight") || 0.5) + 0.2),
         })
         .update();
 
-      // Layout
+      // Layout with responsive spacing
       const layout = cy.layout({
         name: "dagre",
         rankDir: "TB",
-        spacingFactor: 1.5,
+        spacingFactor: isMobile ? 1.1 : 1.5,
         nodeDimensionsIncludeLabels: true,
+        animate: true,
       });
+      
       layout.run();
+      
+      // Auto-fit the graph on load/resize
+      cy.fit(null, isMobile ? 20 : 50);
     }
-  }, [elements]);
+  }, [elements, isMobile]);
 
   return (
-    <div className="w-full h-full min-h-[600px] bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
+    <div className="w-full relative bg-white dark:bg-zinc-900 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800">
       <CytoscapeComponent
         elements={elements}
         cy={(cy) => {
           cyRef.current = cy;
         }}
-        style={{ width: "100%", height: "100%", minHeight: "600px" }}
-        layout={{ name: "dagre", rankDir: "TB", spacingFactor: 1.5 }}
+        style={{ 
+          width: "100%", 
+          height: isMobile ? "400px" : "600px",
+          display: "block"
+        }}
+        // Default layout to prevent flash of unstyled content
+        layout={{ name: "dagre", rankDir: "TB" }}
+        wheelSensitivity={0.2}
       />
+      
+      {/* Mobile Interaction Hint */}
+      {isMobile && (
+        <div className="absolute bottom-2 right-2 bg-black/50 text-[10px] text-white px-2 py-1 rounded pointer-events-none">
+          Pinch to zoom • Drag to pan
+        </div>
+      )}
     </div>
   );
 }
-
