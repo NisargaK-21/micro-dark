@@ -284,7 +284,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
       <div className="ml-0 md:ml-64 p-4 sm:p-6 md:p-8">
         <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl mt-10 font-bold text-zinc-900 dark:text-white mb-2">
             Analytics Dashboard
           </h1>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
